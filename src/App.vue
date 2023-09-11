@@ -1,6 +1,6 @@
 <template>
 
-  <div class="holder">
+  <div class="holder" id="app">
     <div class="field __big">
       <div class="table __long">
         <div class="round">
@@ -89,15 +89,14 @@ export default {
     }
   },
   methods:{
-    gameCounter(){
+    gameCounter(){          // счетчик побед. записыват победы поражения в таблицу
       if(this.result == this.indicators.arrow_back){
         this.victories++;
-        console.log(this.victories)
       } else if(this.result == this.indicators.arrow_forward){
         this.losses++;
       }
     },
-    resetFild(){
+    resetFild(){                        // новый раунд. сбрасывает все до начальных значений
       this.playerItem = "";
       this.enemyItem = "";
       this.result = "";
@@ -106,19 +105,19 @@ export default {
       this.currentImageKey = '';
       clearInterval(this.intervalIdTimer)
     },
-    startAction(){
-      this.timerVisible =true;
+    startAction(){        //начало хода игрока
+      this.timerVisible =true; 
       this.timer = 1;
-      this.intervalIdTimer = setInterval(() => {
+      this.intervalIdTimer = setInterval(() => {        //запускает таймер
         this.timer++
       }, 1000)
-      this.timeoutId = setTimeout(() => {
-        this.cardSelection(this.playerItem)
+      this.timeoutId = setTimeout(() => {               // таймер по истечению которого если игрок не сделал ход он проиграл
+        this.cardSelection(this.playerItem)             
         clearInterval(this.intervalIdTimer);
         this.timerVisible = false;
       }, 5000);
     },
-    cardSelection(btn){
+    cardSelection(btn){           //ход игрока
       this.opponentMove();
       this.playerItem = this.cards[btn];
       this.pause();
@@ -131,13 +130,13 @@ export default {
       this.timerVisible = false;
 
     },
-    opponentMove(){
+    opponentMove(){                   // выбор рандомного элемента противника 
       let keys = Object.keys(this.cards);
       let randomKey = keys[Math.floor(Math.random() * keys.length)];
       this.currentImageKey = randomKey;
       this.enemyItem = this.cards[this.currentImageKey];
     },
-    determiningTheWinner(){
+    determiningTheWinner(){           //проверка результата хода 
       if (this.playerItem == this.enemyItem){
         this.result = this.indicators.equal;
       } else if (this.playerItem == this.cards.paper && this.enemyItem == this.cards.rock){
@@ -150,17 +149,17 @@ export default {
         this.result = this.indicators.arrow_forward;
       }
     },
-    nextElement(){
+    nextElement(){        //метод с помощью которого выбирается следуйщий элемент из обьекта бля прокрутки картинки противника
       let keys = Object.keys(this.cards);
       const currentIndex = keys.indexOf(this.currentImageKey);
       const nextIndex = (currentIndex + 1) % keys.length;
       this.currentImageKey = keys[nextIndex];
     },
-    pause(){
+    pause(){                                                //останавливает интервал
       clearInterval(this.intervalId);
     },
-    startGame(){
-      this.intervalId = setInterval(this.nextElement ,50)
+    startGame(){             //начинает игру
+      this.intervalId = setInterval(this.nextElement ,50);      //прокрутка картинок проитвника
       this.round++;
       this.showElementStart = false;
       this.isButtonClickable = true;
@@ -168,7 +167,7 @@ export default {
     },
   },
   computed: {
-    currentImage() {
+    currentImage() {          //присваевает картинку к айтеку хода противника
       return this.enemyItem = this.cards[this.currentImageKey];
     },
   },
